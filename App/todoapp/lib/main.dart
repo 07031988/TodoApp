@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'UI/Intray/Intray_page.dart';
 import 'models/globarl.dart';
 
 void main() {
@@ -37,9 +38,8 @@ class _MyHomePageState extends State<MyHomePage> {
             body: Stack(children: <Widget>[
               TabBarView(
                 children: [
-                  new Container(
-                    color: darkGreyColor,
-                  ),
+
+                  IntrayPage(),
                   new Container(
                     color: Colors.orange,
                   ),
@@ -92,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 tabs: [
                   Tab(
                     icon: new Icon(Icons.home),
+                    
                   ),
                   Tab(
                     icon: new Icon(Icons.rss_feed),
