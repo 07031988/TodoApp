@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todoapp/Login/loginscreen.dart';
+import 'package:todoapp/bloc/blocs/user_bloc_provider.dart';
 import 'UI/Intray/Intray_page.dart';
 import 'models/globarl.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -14,8 +18,50 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.grey,
       ),
-      home: MyHomePage(title: "Todo App"),
+      home: MyHomePage(),
+      /*home: FutureBuilder(
+        future: getUser(), // a previously-obtained Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+           if (snapshot.connectionState == ConnectionState.none &&
+            snapshot.hasData == null) {
+          //print('project snapshot data is: ${projectSnap.data}');
+           return Container();
+          }
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) {
+          return Column(
+            children: <Widget>[
+              // Widget to display the list of project
+            ],
+            );
+          },
+        );
+      },
+        
+      ),*/
     );
+  }
+
+  Future getUser() async {
+    var result = await http.get('http://10.0.2.2:5000/api/Register');
+    print(result.body);
+    return result;
+    //if no app they then show login screen
+    //if api key
+
+    //login user /user is not logged in
+  }
+
+  Future<String> getApiKey() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String apiKey;
+    try {
+      apiKey = (prefs.getString('API_Token'));
+    } catch (Exception) {
+      apiKey = "";
+    }
+    return apiKey;
   }
 }
 
@@ -29,8 +75,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    bloc.registerUser("Mogen","Mogen","mo","1233333","Mo@gmail.com");
     return MaterialApp(
-      color: Colors.yellow,
+      color: Colors.white,
       home: SafeArea(
         child: DefaultTabController(
           length: 3,
@@ -38,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
             body: Stack(children: <Widget>[
               TabBarView(
                 children: [
-
                   IntrayPage(),
                   new Container(
                     color: Colors.orange,
@@ -64,25 +110,28 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: <Widget>[
                     Text(
                       "Interay",
-                      style: inrayTitleStyle,
+                      style: intrayTitleStyle,
                     ),
                     Container(),
                   ],
                 ),
               ),
               Container(
-                height:80,
-                width:80,
-                margin: EdgeInsets.only(top:110 , left: MediaQuery.of(context).size.width * 0.4 ),
+                height: 80,
+                width: 80,
+                margin: EdgeInsets.only(
+                    top: 110, left: MediaQuery.of(context).size.width * 0.4),
                 child: FloatingActionButton(
-                child:Container( 
-                  
-                child: Icon(Icons.add ,size: 60,),
-                height: 100,
-                width: 100,
-                 ),
-                backgroundColor: redColor,
-                onPressed: () {},
+                  child: Container(
+                    child: Icon(
+                      Icons.add,
+                      size: 60,
+                    ),
+                    height: 100,
+                    width: 100,
+                  ),
+                  backgroundColor: redColor,
+                  onPressed: () {},
                 ),
               ),
             ]),
@@ -92,7 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 tabs: [
                   Tab(
                     icon: new Icon(Icons.home),
-                    
                   ),
                   Tab(
                     icon: new Icon(Icons.rss_feed),
